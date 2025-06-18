@@ -1,0 +1,45 @@
+// Production Prisma schema for PostgreSQL
+// This is your Prisma schema file for production deployment
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relations
+  entries   DailyEntry[]
+  
+  @@map("users")
+}
+
+model DailyEntry {
+  id               String   @id @default(cuid())
+  userId           String
+  date             DateTime
+  weight           Float
+  fatigueLevel     Int      // 1-10 scale
+  caloriesConsumed Int
+  steps            Int
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  
+  // Relations
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Ensure one entry per user per date
+  @@unique([userId, date])
+  @@map("daily_entries")
+}
