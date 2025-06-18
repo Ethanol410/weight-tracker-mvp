@@ -201,8 +201,7 @@ export default function DailyEntryForm({
             name="date"
             value={formData.date}
             onChange={handleChange}
-            onBlur={handleBlur}
-            className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${
+            onBlur={handleBlur}            className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-gray-900 bg-white ${
               getFieldError('date') ? 'border-red-500 bg-red-50' : 'border-gray-300 hover:border-gray-400'
             }`}
             required
@@ -227,8 +226,7 @@ export default function DailyEntryForm({
               onBlur={handleBlur}
               step="0.1"
               min="30"
-              max="300"
-              className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${
+              max="300"              className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-gray-900 bg-white ${
                 getFieldError('weight') ? 'border-red-500 bg-red-50' : 'border-gray-300 hover:border-gray-400'
               }`}
               placeholder="Ex: 70.5"
@@ -254,8 +252,7 @@ export default function DailyEntryForm({
               name="fatigueLevel"
               value={formData.fatigueLevel}
               onChange={handleChange}
-              onBlur={handleBlur}
-              className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${
+              onBlur={handleBlur}              className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-gray-900 bg-white ${
                 getFieldError('fatigueLevel') ? 'border-red-500 bg-red-50' : 'border-gray-300 hover:border-gray-400'
               }`}
             >
@@ -298,8 +295,7 @@ export default function DailyEntryForm({
               onChange={handleChange}
               onBlur={handleBlur}
               min="0"
-              max="10000"
-              className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${
+              max="10000"              className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-gray-900 bg-white ${
                 getFieldError('caloriesConsumed') ? 'border-red-500 bg-red-50' : 'border-gray-300 hover:border-gray-400'
               }`}
               placeholder="Ex: 2000"
@@ -328,8 +324,7 @@ export default function DailyEntryForm({
               onChange={handleChange}
               onBlur={handleBlur}
               min="0"
-              max="100000"
-              className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${
+              max="100000"              className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-gray-900 bg-white ${
                 getFieldError('steps') ? 'border-red-500 bg-red-50' : 'border-gray-300 hover:border-gray-400'
               }`}
               placeholder="Ex: 8000"

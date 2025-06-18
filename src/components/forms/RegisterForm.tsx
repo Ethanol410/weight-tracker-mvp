@@ -166,8 +166,7 @@ export default function RegisterForm() {
                   autoComplete="name"
                   value={formData.name}
                   onChange={handleChange}
-                  onBlur={handleBlur}
-                  className={`appearance-none relative block w-full px-3 py-2 border rounded-md placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm transition-all duration-200 ${
+                  onBlur={handleBlur}                  className={`appearance-none relative block w-full px-3 py-2 border rounded-md placeholder-gray-500 text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm transition-all duration-200 ${
                     getFieldError('name') ? 'border-red-500 bg-red-50' : 'border-gray-300 hover:border-gray-400'
                   }`}
                   placeholder="Votre nom complet"
@@ -189,8 +188,7 @@ export default function RegisterForm() {
                   autoComplete="email"
                   value={formData.email}
                   onChange={handleChange}
-                  onBlur={handleBlur}
-                  className={`appearance-none relative block w-full px-3 py-2 border rounded-md placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm transition-all duration-200 ${
+                  onBlur={handleBlur}                  className={`appearance-none relative block w-full px-3 py-2 border rounded-md placeholder-gray-500 text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm transition-all duration-200 ${
                     getFieldError('email') ? 'border-red-500 bg-red-50' : 'border-gray-300 hover:border-gray-400'
                   }`}
                   placeholder="votre@email.com"
@@ -212,8 +210,7 @@ export default function RegisterForm() {
                   autoComplete="new-password"
                   value={formData.password}
                   onChange={handleChange}
-                  onBlur={handleBlur}
-                  className={`appearance-none relative block w-full px-3 py-2 border rounded-md placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm transition-all duration-200 ${
+                  onBlur={handleBlur}                  className={`appearance-none relative block w-full px-3 py-2 border rounded-md placeholder-gray-500 text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm transition-all duration-200 ${
                     getFieldError('password') ? 'border-red-500 bg-red-50' : 'border-gray-300 hover:border-gray-400'
                   }`}
                   placeholder="Minimum 6 caractères"
