@@ -4,11 +4,77 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Plus, BarChart3, Calendar, LogOut, Activity, TrendingUp } from 'lucide-react'
 import { animationClasses } from '@/lib/animations'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+
+interface DailyEntry {
+  id: string
+  date: string
+  weight: number
+  fatigueLevel: number
+  caloriesConsumed: number
+  steps: number
+}
 
 export default function DashboardPage() {
   const router = useRouter()
   const [isLoggingOut, setIsLoggingOut] = useState(false)
+  const [stats, setStats] = useState({
+    entriesThisWeek: 0,
+    weightTrend: { value: '—', change: 'Aucune donnée', changeType: 'neutral' as 'positive' | 'negative' | 'neutral' }
+  })
+  const [isLoadingStats, setIsLoadingStats] = useState(true)
+
+  // Récupérer les statistiques réelles
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const response = await fetch('/api/entries?limit=50')
+        if (response.ok) {
+          const data = await response.json()
+          const entries = data.entries || []
+            // Calculer les entrées de cette semaine
+          const oneWeekAgo = new Date()
+          oneWeekAgo.setDate(oneWeekAgo.getDate() - 7)
+          
+          const entriesThisWeek = entries.filter((entry: DailyEntry) => 
+            new Date(entry.date) >= oneWeekAgo
+          ).length
+          
+          // Calculer la tendance du poids
+          let weightTrend = { value: '—', change: 'Aucune donnée', changeType: 'neutral' as 'positive' | 'negative' | 'neutral' }
+          
+          if (entries.length >= 2) {
+            const sortedEntries = entries.sort((a: DailyEntry, b: DailyEntry) => 
+              new Date(b.date).getTime() - new Date(a.date).getTime()
+            )
+            
+            const latestWeight = sortedEntries[0]?.weight
+            const previousWeight = sortedEntries[1]?.weight
+            
+            if (latestWeight && previousWeight) {
+              const difference = latestWeight - previousWeight
+              const isPositive = difference < 0 // Perte de poids = positif
+              
+              weightTrend = {
+                value: `${difference > 0 ? '↑' : '↓'} ${Math.abs(difference).toFixed(1)}kg`,
+                change: difference === 0 ? 'Poids stable' : 
+                       isPositive ? 'Progression en cours' : 'Prise de poids',
+                changeType: difference === 0 ? 'neutral' : isPositive ? 'positive' : 'negative'
+              }
+            }
+          }
+          
+          setStats({ entriesThisWeek, weightTrend })
+        }
+      } catch (error) {
+        console.error('Erreur lors du chargement des statistiques:', error)
+      } finally {
+        setIsLoadingStats(false)
+      }
+    }
+    
+    fetchStats()
+  }, [])
 
   const handleLogout = async () => {
     setIsLoggingOut(true)
@@ -48,37 +114,36 @@ export default function DashboardPage() {
       title: 'Historique',
       description: 'Consulter vos entrées passées',
       color: 'bg-green-500',
-      hoverColor: 'hover:bg-green-600',
-      delay: '0.3s'
+      hoverColor: 'hover:bg-green-600',      delay: '0.3s'
     }
   ]
 
-  const stats = [
+  // Préparer les données statistiques pour l'affichage
+  const displayStats = [
     {
       icon: Activity,
       label: 'Entrées cette semaine',
-      value: '5',
-      change: '+2 par rapport à la semaine dernière',
-      changeType: 'positive',
+      value: isLoadingStats ? '...' : stats.entriesThisWeek.toString(),
+      change: isLoadingStats ? 'Chargement...' : `${stats.entriesThisWeek} entrées enregistrées`,
+      changeType: 'neutral' as const,
       delay: '0.4s'
     },
     {
       icon: TrendingUp,
       label: 'Tendance du poids',
-      value: '↓ 0.8kg',
-      change: 'Progression en cours',
-      changeType: 'positive',
+      value: isLoadingStats ? '...' : stats.weightTrend.value,
+      change: isLoadingStats ? 'Chargement...' : stats.weightTrend.change,
+      changeType: stats.weightTrend.changeType,
       delay: '0.5s'
     }
   ]
-
   return (
     <div className={`min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 ${animationClasses.fadeIn}`}>
       {/* Header */}
       <div className="bg-white shadow-sm border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center py-4 sm:py-6 space-y-3 sm:space-y-0">
-            <div className={animationClasses.slideInRight}>
+            <div className="opacity-0 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
               <div className="flex items-center space-x-3">
                 <div className="h-8 w-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">
                   <span className="text-white text-lg font-bold">📊</span>
@@ -94,7 +159,8 @@ export default function DashboardPage() {
             <button
               onClick={handleLogout}
               disabled={isLoggingOut}
-              className={`flex items-center space-x-2 bg-red-600 hover:bg-red-700 text-white px-3 py-2 sm:px-4 rounded-lg text-sm font-medium transition-all duration-200 w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed ${animationClasses.hoverLift}`}
+              className={`flex items-center space-x-2 bg-red-600 hover:bg-red-700 text-white px-3 py-2 sm:px-4 rounded-lg text-sm font-medium transition-all duration-200 w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed opacity-0 animate-fade-in-up ${animationClasses.hoverLift}`}
+              style={{ animationDelay: '0.2s' }}
             >
               <LogOut className="h-4 w-4" />
               <span>{isLoggingOut ? 'Déconnexion...' : 'Se déconnecter'}</span>
@@ -103,10 +169,9 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-        <div className="space-y-8">
+      <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">        <div className="space-y-8">
           {/* Welcome Section */}
-          <div className={`text-center ${animationClasses.fadeInUp}`}>
+          <div className="text-center opacity-0 animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
             <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
               Bonjour ! 👋
             </h2>
@@ -117,16 +182,16 @@ export default function DashboardPage() {
 
           {/* Quick Actions */}
           <div>
-            <h3 className={`text-lg font-semibold text-gray-900 mb-4 ${animationClasses.slideInRight}`}>
+            <h3 className="text-lg font-semibold text-gray-900 mb-4 opacity-0 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
               Actions rapides
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-              {quickActions.map((action) => (
+              {quickActions.map((action, index) => (
                 <Link
                   key={action.title}
                   href={action.href}
-                  className={`bg-white p-6 rounded-xl shadow-md hover:shadow-xl transform transition-all duration-300 border border-gray-100 group ${animationClasses.hoverLift} ${animationClasses.slideInRight}`}
-                  style={{ animationDelay: action.delay }}
+                  className={`bg-white p-6 rounded-xl shadow-md hover:shadow-xl transform transition-all duration-300 border border-gray-100 group opacity-0 animate-fade-in-up ${animationClasses.hoverLift}`}
+                  style={{ animationDelay: `${0.5 + index * 0.1}s` }}
                 >
                   <div className="flex items-start space-x-4">
                     <div className={`flex-shrink-0 p-3 rounded-lg ${action.color} ${action.hoverColor} transition-colors duration-200`}>
@@ -144,19 +209,16 @@ export default function DashboardPage() {
                 </Link>
               ))}
             </div>
-          </div>
-
-          {/* Statistics */}
+          </div>          {/* Statistics */}
           <div>
-            <h3 className={`text-lg font-semibold text-gray-900 mb-4 ${animationClasses.slideInRight}`}>
+            <h3 className="text-lg font-semibold text-gray-900 mb-4 opacity-0 animate-fade-in-up" style={{ animationDelay: '0.8s' }}>
               Statistiques
-            </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-              {stats.map((stat) => (
+            </h3>            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+              {displayStats.map((stat, index) => (
                 <div
                   key={stat.label}
-                  className={`bg-white p-6 rounded-xl shadow-md border border-gray-100 ${animationClasses.slideInRight}`}
-                  style={{ animationDelay: stat.delay }}
+                  className="bg-white p-6 rounded-xl shadow-md border border-gray-100 opacity-0 animate-fade-in-up"
+                  style={{ animationDelay: `${0.9 + index * 0.1}s` }}
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
@@ -180,7 +242,7 @@ export default function DashboardPage() {
           </div>
 
           {/* Tips Section */}
-          <div className={`bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-6 border border-blue-100 ${animationClasses.slideInRight}`} style={{ animationDelay: '0.6s' }}>
+          <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-6 border border-blue-100 opacity-0 animate-fade-in-up" style={{ animationDelay: '1.1s' }}>
             <div className="flex items-start space-x-4">
               <div className="flex-shrink-0">
                 <div className="p-2 bg-blue-100 rounded-lg">

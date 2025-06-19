@@ -15,24 +15,28 @@
 ## ✨ **Features**
 
 ### 🔐 **Authentication**
+
 - Secure user registration and login
 - JWT-based authentication
 - Password hashing with bcrypt
 - Protected routes and API endpoints
 
 ### 📊 **Weight Tracking**
+
 - Daily weight entry logging
 - Fatigue level tracking (1-10 scale)
 - Calorie consumption tracking
 - Step counter integration
 
 ### 📈 **Data Visualization**
+
 - Interactive weight progression charts
 - Fatigue level trends
 - Calorie and step analytics
 - Multiple time period filters (7d, 30d, 90d)
 
 ### 🎨 **User Experience**
+
 - **Mobile-first responsive design**
 - **Modern UI with Tailwind CSS**
 - **Smooth animations and transitions**
@@ -68,7 +72,7 @@ Open [http://localhost:3000](http://localhost:3000) to view the application.
 
 ```bash
 npm run test:all    # All tests
-npm test           # Unit tests  
+npm test           # Unit tests
 npm run test:e2e   # E2E tests
 ```
 

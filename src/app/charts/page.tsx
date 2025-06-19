@@ -170,16 +170,15 @@ export default function ChartsPage() {
             <div className="flex items-center space-x-3">
               {/* Export button */}
               <ExportButton entries={filteredEntries} />
-              
-              {/* Bouton type de graphique pour les métriques */}
-              <div className="flex items-center space-x-2">
-                <span className="text-sm text-gray-600 hidden sm:inline">Métriques:</span>
+                {/* Bouton type de graphique pour les métriques */}
+              <div className="flex items-center space-x-2 bg-gray-50 rounded-lg p-1">
+                <span className="text-sm text-gray-600 hidden sm:inline px-2">Métriques:</span>
                 <button
                   onClick={() => setMetricsChartType('line')}
-                  className={`p-2 rounded-md transition-colors ${
+                  className={`p-2 rounded-md transition-all duration-200 ${
                     metricsChartType === 'line' 
-                      ? 'bg-blue-100 text-blue-700' 
-                      : 'text-gray-400 hover:text-gray-600'
+                      ? 'bg-blue-500 text-white shadow-sm transform scale-105' 
+                      : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'
                   }`}
                   title="Graphique en lignes"
                 >
@@ -187,10 +186,10 @@ export default function ChartsPage() {
                 </button>
                 <button
                   onClick={() => setMetricsChartType('bar')}
-                  className={`p-2 rounded-md transition-colors ${
+                  className={`p-2 rounded-md transition-all duration-200 ${
                     metricsChartType === 'bar' 
-                      ? 'bg-blue-100 text-blue-700' 
-                      : 'text-gray-400 hover:text-gray-600'
+                      ? 'bg-blue-500 text-white shadow-sm transform scale-105' 
+                      : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'
                   }`}
                   title="Graphique en barres"
                 >
