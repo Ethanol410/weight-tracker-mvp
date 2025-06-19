@@ -9,6 +9,7 @@ import ExportButton from '@/components/ui/ExportButton'
 import { ChartSkeleton, CardSkeleton } from '@/components/ui/Loading'
 import { DailyEntry } from '@/types'
 import { ArrowLeft, BarChart3, LineChart, TrendingUp, Activity, Weight, Zap, Target, Footprints } from 'lucide-react'
+import MobileNavigation from '@/components/layout/MobileNavigation'
 
 export default function ChartsPage() {
   const [entries, setEntries] = useState<DailyEntry[]>([])
@@ -143,56 +144,57 @@ export default function ChartsPage() {
           </div>
         </div>
       </div>
-    )
-  }
+    )  }
 
   return (
-    <div className="min-h-screen bg-gray-50">      {/* En-tête */}
-      <div className="bg-white shadow-sm border-b border-gray-200">
+    <div className="min-h-screen bg-gray-50 pb-20 sm:pb-0">{/* En-tête */}      <div className="bg-white shadow-sm border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="py-4 flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-3 sm:space-y-0">
+          <div className="py-4 flex flex-col space-y-3 sm:space-y-0 sm:flex-row items-start sm:items-center justify-between">
             <div className="flex items-center space-x-4">
               <button
                 onClick={() => router.push('/dashboard')}
                 className="flex items-center text-gray-600 hover:text-gray-900 transition-colors"
               >
                 <ArrowLeft className="h-5 w-5 mr-2" />
-                {/* <span className="hidden sm:inline">Retour au tableau de bord</span> */}
+                <span className="hidden sm:inline">Retour au tableau de bord</span>
                 <span className="sm:hidden">Retour</span>
               </button>
               <div>
                 <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Visualisation</h1>
-                {/* <p className="text-xs sm:text-sm text-gray-600">Analysez votre évolution</p> */}
+                <p className="text-xs sm:text-sm text-gray-600 hidden sm:block">Analysez votre évolution</p>
               </div>
             </div>
-              <div className="flex items-center space-x-3">
+            
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-2 sm:space-y-0 sm:space-x-3 w-full sm:w-auto">
               {/* Export button */}
-              <ExportButton entries={filteredEntries} />
+              <div className="order-2 sm:order-1">
+                <ExportButton entries={filteredEntries} />
+              </div>
               
               {/* Bouton type de graphique pour tous les graphiques */}
-              <div className="flex items-center space-x-2 bg-gray-50 rounded-lg p-1">
-                <span className="text-sm text-gray-600 hidden sm:inline px-2">Type de graphique:</span>
+              <div className="flex items-center space-x-1 sm:space-x-2 bg-gray-50 rounded-lg p-1 order-1 sm:order-2">
+                <span className="text-xs sm:text-sm text-gray-600 hidden md:inline px-1 sm:px-2">Type:</span>
                 <button
                   onClick={() => setMetricsChartType('line')}
-                  className={`p-2 rounded-md transition-all duration-200 ${
+                  className={`p-1 sm:p-2 rounded-md transition-all duration-200 ${
                     metricsChartType === 'line'
                       ? 'bg-blue-500 text-white shadow-sm transform scale-105' 
                       : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'
                   }`}
                   title="Graphique en lignes"
                 >
-                  <LineChart className="h-4 w-4" />
+                  <LineChart className="h-3 w-3 sm:h-4 sm:w-4" />
                 </button>
                 <button
                   onClick={() => setMetricsChartType('bar')}
-                  className={`p-2 rounded-md transition-all duration-200 ${
+                  className={`p-1 sm:p-2 rounded-md transition-all duration-200 ${
                     metricsChartType === 'bar'
                       ? 'bg-blue-500 text-white shadow-sm transform scale-105' 
                       : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'
                   }`}
                   title="Graphique en barres"
                 >
-                  <BarChart3 className="h-4 w-4" />
+                  <BarChart3 className="h-3 w-3 sm:h-4 sm:w-4" />
                 </button>
               </div>
             </div>
@@ -349,10 +351,12 @@ export default function ChartsPage() {
                   </div>
                 </div>
               </div>
-            </div>
-          </>
+            </div>          </>
         )}
       </div>
+
+      {/* Navigation mobile */}
+      <MobileNavigation />
     </div>
   )
 }

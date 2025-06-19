@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { Plus, BarChart3, Calendar, LogOut, Activity, TrendingUp } from 'lucide-react'
 import { animationClasses } from '@/lib/animations'
 import { useState, useEffect } from 'react'
+import MobileNavigation from '@/components/layout/MobileNavigation'
 
 interface DailyEntry {
   id: string
@@ -131,18 +132,18 @@ export default function DashboardPage() {
     {
       icon: TrendingUp,
       label: 'Tendance du poids',
-      value: isLoadingStats ? '...' : stats.weightTrend.value,
-      change: isLoadingStats ? 'Chargement...' : stats.weightTrend.change,
+      value: isLoadingStats ? '...' : stats.weightTrend.value,      change: isLoadingStats ? 'Chargement...' : stats.weightTrend.change,
       changeType: stats.weightTrend.changeType,
       delay: '0.5s'
     }
   ]
+
   return (
-    <div className={`min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 ${animationClasses.fadeIn}`}>
-      {/* Header */}
-      <div className="bg-white shadow-sm border-b border-gray-200">
+    <div className={`min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 ${animationClasses.fadeIn} pb-20 sm:pb-0`}>
+      {/* Header - Desktop seulement */}
+      <div className="hidden sm:block bg-white shadow-sm border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center py-4 sm:py-6 space-y-3 sm:space-y-0">
+          <div className="flex justify-between items-center py-6">
             <div className="opacity-0 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
               <div className="flex items-center space-x-3">
                 <div className="h-8 w-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">
@@ -159,7 +160,7 @@ export default function DashboardPage() {
             <button
               onClick={handleLogout}
               disabled={isLoggingOut}
-              className={`flex items-center space-x-2 bg-red-600 hover:bg-red-700 text-white px-3 py-2 sm:px-4 rounded-lg text-sm font-medium transition-all duration-200 w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed opacity-0 animate-fade-in-up ${animationClasses.hoverLift}`}
+              className={`flex items-center space-x-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed opacity-0 animate-fade-in-up ${animationClasses.hoverLift}`}
               style={{ animationDelay: '0.2s' }}
             >
               <LogOut className="h-4 w-4" />
@@ -169,7 +170,19 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">        <div className="space-y-8">
+      {/* Header mobile - simplifié */}
+      <div className="sm:hidden bg-white shadow-sm border-b border-gray-200">
+        <div className="px-4 py-4">
+          <div className="flex items-center justify-center space-x-3">
+            <div className="h-8 w-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">
+              <span className="text-white text-lg font-bold">📊</span>
+            </div>
+            <h1 className="text-xl font-bold text-gray-900">Weight Tracker</h1>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8"><div className="space-y-8">
           {/* Welcome Section */}
           <div className="text-center opacity-0 animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
             <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
@@ -259,12 +272,13 @@ export default function DashboardPage() {
                 </p>
               </div>
             </div>
-          </div>
-
-          {/* Mobile-only bottom spacing */}
+          </div>          {/* Mobile-only bottom spacing */}
           <div className="h-4 sm:h-0"></div>
         </div>
       </div>
+
+      {/* Navigation mobile */}
+      <MobileNavigation onLogout={handleLogout} isLoggingOut={isLoggingOut} />
     </div>
   )
 }

@@ -6,6 +6,7 @@ import DailyEntryForm from '@/components/forms/DailyEntryForm'
 import EntriesList from '@/components/forms/EntriesList'
 import { Plus, ArrowLeft } from 'lucide-react'
 import { DailyEntry } from '@/types'
+import MobileNavigation from '@/components/layout/MobileNavigation'
 
 interface DailyEntryFormData {
   date: string
@@ -113,27 +114,16 @@ export default function EntryPage() {
       showMessage('error', 'Erreur de connexion au serveur')
     }
   }
-
   const handleCancel = () => {
     setShowForm(false)
     setEditingEntry(null)
   }
 
-  const handleLogout = async () => {
-    try {
-      await fetch('/api/auth/logout', { method: 'POST' })
-      router.push('/login')
-    } catch (error) {
-      console.error('Logout error:', error)
-    }
-  }
-
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
+    <div className="min-h-screen bg-gray-50 pb-20 sm:pb-0">{/* Header */}
       <div className="bg-white shadow">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center py-4 sm:py-6 space-y-3 sm:space-y-0">
             <div className="flex items-center gap-4">
               <button
                 onClick={() => router.push('/dashboard')}
@@ -141,26 +131,20 @@ export default function EntryPage() {
               >
                 <ArrowLeft className="w-5 h-5" />
               </button>
-              <h1 className="text-2xl font-bold text-gray-900">
+              <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
                 Saisie quotidienne
-              </h1>
-            </div>
-            <div className="flex items-center gap-4">
+              </h1>            </div>
+            <div className="flex items-center gap-2 sm:gap-4 w-full sm:w-auto">
               {!showForm && (
                 <button
                   onClick={() => setShowForm(true)}
-                  className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium"
+                  className="flex items-center gap-1 sm:gap-2 bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 sm:px-4 sm:py-2 rounded-md text-xs sm:text-sm font-medium flex-1 sm:flex-none justify-center"
                 >
-                  <Plus className="w-4 h-4" />
-                  Nouvelle entrée
+                  <Plus className="w-3 h-3 sm:w-4 sm:h-4" />
+                  <span className="hidden sm:inline">Nouvelle entrée</span>
+                  <span className="sm:hidden">Nouvelle</span>
                 </button>
               )}
-              <button
-                onClick={handleLogout}
-                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium"
-              >
-                Se déconnecter
-              </button>
             </div>
           </div>
         </div>
@@ -195,10 +179,12 @@ export default function EntryPage() {
               onEdit={handleEdit}
               onDelete={handleDelete}
               isLoading={isLoading}
-            />
-          )}
+            />          )}
         </div>
       </div>
+
+      {/* Navigation mobile */}
+      <MobileNavigation />
     </div>
   )
 }
