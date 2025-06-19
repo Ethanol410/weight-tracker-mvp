@@ -2,8 +2,7 @@
 
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
-import WeightChart from '@/components/charts/WeightChart'
-import MetricsChart from '@/components/charts/MetricsChart'
+import IndividualMetricChart from '@/components/charts/IndividualMetricChart'
 import ChartFilters, { FilterOptions } from '@/components/charts/ChartFilters'
 import SummaryCard from '@/components/charts/SummaryCard'
 import ExportButton from '@/components/ui/ExportButton'
@@ -158,25 +157,25 @@ export default function ChartsPage() {
                 className="flex items-center text-gray-600 hover:text-gray-900 transition-colors"
               >
                 <ArrowLeft className="h-5 w-5 mr-2" />
-                <span className="hidden sm:inline">Retour au tableau de bord</span>
+                {/* <span className="hidden sm:inline">Retour au tableau de bord</span> */}
                 <span className="sm:hidden">Retour</span>
               </button>
               <div>
                 <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Visualisation</h1>
-                <p className="text-xs sm:text-sm text-gray-600">Analysez votre évolution</p>
+                {/* <p className="text-xs sm:text-sm text-gray-600">Analysez votre évolution</p> */}
               </div>
             </div>
-            
-            <div className="flex items-center space-x-3">
+              <div className="flex items-center space-x-3">
               {/* Export button */}
               <ExportButton entries={filteredEntries} />
-                {/* Bouton type de graphique pour les métriques */}
+              
+              {/* Bouton type de graphique pour tous les graphiques */}
               <div className="flex items-center space-x-2 bg-gray-50 rounded-lg p-1">
-                <span className="text-sm text-gray-600 hidden sm:inline px-2">Métriques:</span>
+                <span className="text-sm text-gray-600 hidden sm:inline px-2">Type de graphique:</span>
                 <button
                   onClick={() => setMetricsChartType('line')}
                   className={`p-2 rounded-md transition-all duration-200 ${
-                    metricsChartType === 'line' 
+                    metricsChartType === 'line'
                       ? 'bg-blue-500 text-white shadow-sm transform scale-105' 
                       : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'
                   }`}
@@ -187,7 +186,7 @@ export default function ChartsPage() {
                 <button
                   onClick={() => setMetricsChartType('bar')}
                   className={`p-2 rounded-md transition-all duration-200 ${
-                    metricsChartType === 'bar' 
+                    metricsChartType === 'bar'
                       ? 'bg-blue-500 text-white shadow-sm transform scale-105' 
                       : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'
                   }`}
@@ -273,12 +272,83 @@ export default function ChartsPage() {
             <ChartFilters 
               onFilterChange={applyFilters}
               totalEntries={filteredEntries.length}
-            />
-
-            {/* Graphiques */}
+            />            {/* Graphiques */}
             <div className="space-y-6">
-              <WeightChart entries={filteredEntries} />
-              <MetricsChart entries={filteredEntries} chartType={metricsChartType} />
+              {/* Graphique du poids */}
+              <IndividualMetricChart 
+                entries={filteredEntries} 
+                chartType={metricsChartType}
+                metric="weight"
+                title="Évolution du poids"
+                color="#3b82f6"
+                unit=" kg"
+                height={350}
+              />
+              
+              {/* Graphiques des métriques en grille 2x2 */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <IndividualMetricChart 
+                  entries={filteredEntries} 
+                  chartType={metricsChartType}
+                  metric="fatigueLevel"
+                  title="Niveau de fatigue"
+                  color="#f97316"
+                  unit="/10"
+                  yAxisDomain={[0, 10]}
+                />
+                
+                <IndividualMetricChart 
+                  entries={filteredEntries} 
+                  chartType={metricsChartType}
+                  metric="caloriesConsumed"
+                  title="Calories consommées"
+                  color="#22c55e"
+                  unit=" kcal"
+                />
+                
+                <IndividualMetricChart 
+                  entries={filteredEntries} 
+                  chartType={metricsChartType}
+                  metric="steps"
+                  title="Nombre de pas"
+                  color="#a855f7"
+                  unit=" pas"
+                />
+                
+                {/* Graphique bonus - IMC ou autre métrique calculée */}
+                <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                  <h4 className="text-md font-medium text-gray-800 mb-3 flex items-center">
+                    <div className="w-3 h-3 bg-blue-500 rounded-full mr-2"></div>
+                    Résumé de la période
+                  </h4>
+                  <div className="space-y-4">
+                    <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-4 rounded-lg">
+                      <div className="text-sm text-gray-600">Période analysée</div>                      <div className="text-lg font-semibold text-gray-900">
+                        {stats?.dateRange.start ? new Date(stats.dateRange.start).toLocaleDateString() : '—'} → {stats?.dateRange.end ? new Date(stats.dateRange.end).toLocaleDateString() : '—'}
+                      </div>
+                      <div className="text-sm text-gray-500 mt-1">
+                        {stats?.totalEntries} entrées sur {stats?.dateRange.start && stats?.dateRange.end ? Math.ceil((new Date(stats.dateRange.end).getTime() - new Date(stats.dateRange.start).getTime()) / (1000 * 60 * 60 * 24)) : 0} jours
+                      </div>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="text-center p-3 bg-green-50 rounded-lg">
+                        <div className="text-xs text-green-600">Évolution poids</div>
+                        <div className={`text-lg font-bold ${stats?.weightChange && stats.weightChange < 0 ? 'text-green-600' : stats?.weightChange && stats.weightChange > 0 ? 'text-red-600' : 'text-gray-600'}`}>
+                          {stats?.weightChange ? `${stats.weightChange >= 0 ? '+' : ''}${stats.weightChange.toFixed(1)} kg` : '—'}
+                        </div>
+                      </div>
+                      
+                      <div className="text-center p-3 bg-orange-50 rounded-lg">
+                        <div className="text-xs text-orange-600">Fatigue moy.</div>
+                        <div className="text-lg font-bold text-orange-600">
+                          {stats?.avgFatigue ? `${stats.avgFatigue.toFixed(1)}/10` : '—'}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </>
         )}
